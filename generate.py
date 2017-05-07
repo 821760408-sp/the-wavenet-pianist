@@ -129,12 +129,19 @@ def create_seed(filename,
                 quantization_channels,
                 window_size):
     audio, _ = librosa.load(filename, sr=sample_rate, mono=True)
+    
+    # FIXME: normalize audio
+    audio = librosa.util.normalize(audio) * 0.8
+    
     quantized = mu_law_encode(audio, quantization_channels)
-    cut_index = tf.cond(tf.size(quantized) < tf.constant(window_size),
-                        lambda: tf.size(quantized),
-                        lambda: tf.constant(window_size))
 
-    return quantized[:cut_index]
+    # FIXME: here we'er experimenting with mixing human seeding with generation
+    # cut_index = tf.cond(tf.size(quantized) < tf.constant(window_size),
+    #                     lambda: tf.size(quantized),
+    #                     lambda: tf.constant(window_size))
+
+    # return quantized[:cut_index]
+    return quantized
 
 
 def load_lc_embedding(lc_embedding):
@@ -208,7 +215,9 @@ def main():
                            wavenet_params['sample_rate'],
                            QUANTIZATION_CHANNELS,
                            net.receptive_field)
-        waveform = sess.run(seed).tolist()
+        # FIXME: see line 138
+        # waveform = sess.run(seed).tolist()
+        waveform = seed
     else:
         # Silence with a single random sample at the end.
         waveform = [0] * (net.receptive_field - 1)
