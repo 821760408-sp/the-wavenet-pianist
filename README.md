@@ -1,2 +1,2 @@
-# the-wavenet-pianist
-A Wavenet generative model in TensorFlow, trained with Western Classical solo piano canon with global and local conditioning
+# the-wavenet-pianist (working)
+A Wavenet-based generative model for music in TensorFlow, specialized in mixing the style and content of two different pieces of music using a main, large Wavenet model with local conditioning and context stacks for content generation, conditioning on a separate hierarchy of various sizes of smaller but longer Wavenets responsible for generating style representations.
